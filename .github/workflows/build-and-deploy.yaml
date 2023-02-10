@@ -1,0 +1,38 @@
+name: Deploy third party application
+on:
+  push:
+    branches:
+    - main
+env:
+  NAME: httpbin
+jobs:
+  update_argo_apps:
+    name: Update argocd apps with new version
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out app repository
+      uses: actions/checkout@v3
+      with:
+        path: app
+    - name: Prepare kustomize
+      uses: imranismail/setup-kustomize@v1
+    - name: Check out ArgoCD apps repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.DEPLOY_TOKEN }}
+        path: argocd-apps
+        repository: devops-syndicate/argocd-apps
+        ref: main
+    - name: Update resources in ArgoCD apps repository
+      run: |
+        cd argocd-apps
+        [ ! -d apps/${{ env.APP_NAME }} ] && mkdir -p apps/${{ env.APP_NAME }}
+        kustomize build ../app/kustomize > apps/${{ env.APP_NAME }}/app.yaml
+    - name: Commit and push change new version to ArgoCD apps repository
+      run: |
+        cd argocd-apps
+        git config user.name "${{ env.APP_NAME }} github-actions"
+        git config user.email ${{ env.APP_NAME }}@devops-syndicate.github.com
+        git add .
+        git commit -m "Update ${{ env.APP_NAME }} application]"
+        git push

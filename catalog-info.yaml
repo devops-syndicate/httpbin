@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "httpbin"
+  annotations:
+    github.com/project-slug: "devops-syndicate/httpbin"
+    argocd/app-name: httpbin
+  links:
+    - title: Link to ArgoCD
+      url: http://argo-cd.127.0.0.1.nip.io/applications/httpbin
+spec:
+  type: service
+  owner: admins
+  lifecycle: production
