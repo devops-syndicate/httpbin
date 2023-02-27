@@ -17,8 +17,6 @@ spec:
         cpuPercent: 80
     - type: gateway
       properties:
-        class: traefik
-        classInSpec: true
         domain: httpbin.127.0.0.1.nip.io
         http:
           "/": 8080
