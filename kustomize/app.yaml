@@ -10,6 +10,9 @@ spec:
       image: kennethreitz/httpbin:latest
       port: 80
     traits:
+    - type: labels
+      properties:
+        "app.kubernetes.io/name": "httpbin"
     - type: cpuscaler
       properties:
         min: 2
